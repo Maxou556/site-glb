@@ -108,7 +108,7 @@
         };
 
         const addDrink = (drinkType) => {
-            fetch('https://web-production-6586.up.railway.app', {
+            fetch('https://web-production-6586.up.railway.app/add_user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: userName, drink_type: drinkType }),
