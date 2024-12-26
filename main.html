@@ -38,6 +38,10 @@
     </div>
 
     <script>
+        /*****************************************************************
+         * 1) Vérifie qu'un userName existe dans localStorage
+         *    Sinon, redirige vers index.html
+         *****************************************************************/
         const userName = localStorage.getItem('ghlin_user');
         if (!userName) {
             window.location.href = 'index.html';
@@ -45,6 +49,9 @@
             document.getElementById('userName').innerText = userName;
         }
 
+        /*****************************************************************
+         * 2) Fonction d'animation du compteur de litres
+         *****************************************************************/
         const animateCounter = (element, start, end, duration) => {
             const range = end - start;
             let startTime = null;
@@ -62,10 +69,20 @@
             window.requestAnimationFrame(step);
         };
 
+        /*****************************************************************
+         * 3) Met à jour l'affichage des litres consommés et le temps passé
+         *****************************************************************/
         const updateLitres = () => {
             fetch('https://web-production-6586.up.railway.app/totals')
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        // Gère le cas où le backend renvoie une erreur (404, 500, etc.)
+                        throw new Error(`Erreur ${res.status} : ${res.statusText}`);
+                    }
+                    return res.json();
+                })
                 .then(data => {
+                    // data doit ressembler à : { beer: number, wine: number }
                     const totalLitres = (data.beer * 0.33) + (data.wine * 1);
                     const timeSpent = (data.beer * 10) + (data.wine * 20); // Temps en minutes
 
@@ -90,13 +107,25 @@
                         ? `${hours} heure(s) et ${minutes} minute(s) passées à boire !` 
                         : `${minutes} minute(s) passées à boire !`;
                     document.getElementById('timeSpent').innerText = `Temps total : ${timeText}`;
+                })
+                .catch(error => {
+                    console.error("Erreur lors de la récupération des totaux :", error);
                 });
         };
 
+        /*****************************************************************
+         * 4) Charge la liste des utilisateurs
+         *****************************************************************/
         const loadUsers = () => {
             fetch('https://web-production-6586.up.railway.app/get_users')
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`Erreur ${res.status} : ${res.statusText}`);
+                    }
+                    return res.json();
+                })
                 .then(data => {
+                    // data doit ressembler à : { users: ["Maxence", "Alice", ...] }
                     const usersList = document.getElementById('usersList');
                     usersList.innerHTML = '';
                     data.users.forEach(user => {
@@ -104,23 +133,46 @@
                         li.textContent = user;
                         usersList.appendChild(li);
                     });
+                })
+                .catch(error => {
+                    console.error("Erreur lors de la récupération des utilisateurs :", error);
                 });
         };
 
+        /*****************************************************************
+         * 5) Ajoute une boisson (bière ou vin)
+         *****************************************************************/
         const addDrink = (drinkType) => {
             fetch('https://web-production-6586.up.railway.app/add_drink', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: userName, drink_type: drinkType }),
-            }).then(() => {
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Erreur ${res.status} : ${res.statusText}`);
+                }
+                return res.json();
+            })
+            .then(() => {
+                // Après avoir ajouté la boisson, on rafraîchit les compteurs
                 updateLitres();
                 loadUsers();
+            })
+            .catch(error => {
+                console.error("Erreur lors de l'ajout de la boisson :", error);
             });
         };
 
+        /*****************************************************************
+         * 6) Écouteurs d'événements sur les boutons "Bière" et "Vin"
+         *****************************************************************/
         document.getElementById('addBeer').addEventListener('click', () => addDrink('beer'));
         document.getElementById('addWine').addEventListener('click', () => addDrink('wine'));
 
+        /*****************************************************************
+         * 7) Au chargement de la page, on met à jour les litres et la liste
+         *****************************************************************/
         updateLitres();
         loadUsers();
     </script>
