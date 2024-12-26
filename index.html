@@ -18,7 +18,7 @@
         document.getElementById('startButton').addEventListener('click', () => {
             const name = document.getElementById('name').value.trim();
             if (name) {
-                fetch('https://web-production-6586.up.railway.app', {
+                fetch('https://web-production-6586.up.railway.app/add_user', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name }),
