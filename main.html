@@ -63,7 +63,7 @@
         };
 
         const updateLitres = () => {
-            fetch('http://127.0.0.1:5000/totals')
+            fetch('https://web-production-6586.up.railway.app/totals')
                 .then(res => res.json())
                 .then(data => {
                     const totalLitres = (data.beer * 0.33) + (data.wine * 1);
@@ -94,7 +94,7 @@
         };
 
         const loadUsers = () => {
-            fetch('http://127.0.0.1:5000/get_users')
+            fetch('https://web-production-6586.up.railway.app/get_users')
                 .then(res => res.json())
                 .then(data => {
                     const usersList = document.getElementById('usersList');
