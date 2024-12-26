@@ -18,8 +18,21 @@
         document.getElementById('startButton').addEventListener('click', () => {
             const name = document.getElementById('name').value.trim();
             if (name) {
-                fetch('web-production-6586.up.railway.app', {
+                fetch('https://web-production-6586.up.railway.app/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name }),
-                }).then(r
+                }).then(response => response.json())
+                  .then(() => {
+                      localStorage.setItem('ghlin_user', name);
+                      window.location.href = 'main.html';
+                  }).catch(() => {
+                      alert('Une erreur est survenue. Veuillez réessayer.');
+                  });
+            } else {
+                alert('Veuillez entrer votre prénom.');
+            }
+        });
+    </script>
+</body>
+</html>

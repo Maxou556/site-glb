@@ -76,4 +76,53 @@
 
                     // Message drôle
                     const funnyMessages = [
-                        "À Ghlin les Ba
+                        "À Ghlin les Bains, la soif n'est jamais une option !",
+                        "On pourrait remplir une piscine avec tout ça !",
+                        "Bravo, vous portez Ghlin au sommet de l'hydratation !"
+                    ];
+                    const randomMessage = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+                    document.getElementById('funnyMessage').innerText = randomMessage;
+
+                    // Temps passé à boire
+                    const hours = Math.floor(timeSpent / 60);
+                    const minutes = timeSpent % 60;
+                    const timeText = hours > 0 
+                        ? `${hours} heure(s) et ${minutes} minute(s) passées à boire !` 
+                        : `${minutes} minute(s) passées à boire !`;
+                    document.getElementById('timeSpent').innerText = `Temps total : ${timeText}`;
+                });
+        };
+
+        const loadUsers = () => {
+            fetch('http://127.0.0.1:5000/get_users')
+                .then(res => res.json())
+                .then(data => {
+                    const usersList = document.getElementById('usersList');
+                    usersList.innerHTML = '';
+                    data.users.forEach(user => {
+                        const li = document.createElement('li');
+                        li.textContent = user;
+                        usersList.appendChild(li);
+                    });
+                });
+        };
+
+        const addDrink = (drinkType) => {
+            fetch('https://web-production-6586.up.railway.app/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: userName, drink_type: drinkType }),
+            }).then(() => {
+                updateLitres();
+                loadUsers();
+            });
+        };
+
+        document.getElementById('addBeer').addEventListener('click', () => addDrink('beer'));
+        document.getElementById('addWine').addEventListener('click', () => addDrink('wine'));
+
+        updateLitres();
+        loadUsers();
+    </script>
+</body>
+</html>
