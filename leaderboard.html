@@ -17,7 +17,7 @@
 
     <script>
         const loadLeaderboard = () => {
-            fetch('https://web-production-6586.up.railway.app')
+            fetch('https://web-production-6586.up.railway.app/add_user')
                 .then(res => res.json())
                 .then(data => {
                     const leaderboard = document.getElementById('leaderboard');
