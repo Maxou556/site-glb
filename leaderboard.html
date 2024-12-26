@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghlin les Bains - Leaderboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🍻 Leaderboard 🍷</h1>
+        <ul id="leaderboard"></ul>
+        <div class="navigation">
+            <a href="main.html" class="button">Retour à la page principale</a>
+        </div>
+    </div>
+
+    <script>
+        const loadLeaderboard = () => {
+            fetch('web-production-6586.up.railway.app')
+                .then(res => res.json())
+                .then(data => {
+                    const leaderboard = document.getElementById('leaderboard');
+                    leaderboard.innerHTML = '';
+                    data.leaderboard.forEach(entry => {
+                        const li = document.createElement('li');
+                        li.textContent = `${entry.name} - ${entry.count}`;
+                        leaderboard.appendChild(li);
+                    });
+                });
+        };
+
+        loadLeaderboard();
+    </script>
+</body>
+</html>

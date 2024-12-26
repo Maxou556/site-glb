@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghlin les Bains - Tableau Principal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🍻 Ghlin les Bains 🍷</h1>
+        <p class="subtitle">Bienvenue, <span id="userName"></span> !</p>
+        
+        <div class="litres-counter-section">
+            <h2>Litres Totaux Consommés</h2>
+            <div class="litres-display">
+                <p class="counter" id="litresCounter">0.00</p>
+                <span class="litres-unit">L</span>
+            </div>
+            <p id="funnyMessage"></p>
+            <p id="timeSpent"></p>
+        </div>
+
+        <div class="connected-users">
+            <h2>Personnes Connectées</h2>
+            <ul id="usersList"></ul>
+        </div>
+
+        <div class="actions">
+            <h2>Ajouter une Consommation</h2>
+            <button id="addBeer" class="button">+1 Bière</button>
+            <button id="addWine" class="button">+1 Vin</button>
+        </div>
+
+        <div class="navigation">
+            <a href="leaderboard.html" class="button">Voir le Leaderboard</a>
+        </div>
+    </div>
+
+    <script>
+        const userName = localStorage.getItem('ghlin_user');
+        if (!userName) {
+            window.location.href = 'index.html';
+        } else {
+            document.getElementById('userName').innerText = userName;
+        }
+
+        const animateCounter = (element, start, end, duration) => {
+            const range = end - start;
+            let startTime = null;
+
+            const step = (currentTime) => {
+                if (!startTime) startTime = currentTime;
+                const progress = Math.min((currentTime - startTime) / duration, 1);
+                const value = start + range * progress;
+                element.innerText = value.toFixed(2);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+
+            window.requestAnimationFrame(step);
+        };
+
+        const updateLitres = () => {
+            fetch('http://127.0.0.1:5000/totals')
+                .then(res => res.json())
+                .then(data => {
+                    const totalLitres = (data.beer * 0.33) + (data.wine * 1);
+                    const timeSpent = (data.beer * 10) + (data.wine * 20); // Temps en minutes
+
+                    // Animer le compteur
+                    const counterElement = document.getElementById('litresCounter');
+                    const currentLitres = parseFloat(counterElement.innerText);
+                    animateCounter(counterElement, currentLitres, totalLitres, 1000);
+
+                    // Message drôle
+                    const funnyMessages = [
+                        "À Ghlin les Ba

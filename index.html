@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue à Ghlin les Bains</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container center">
+        <h1 class="title">🍻 Ghlin les Bains 🍷</h1>
+        <p class="subtitle">Entrez votre prénom pour commencer</p>
+        <input type="text" id="name" placeholder="Votre prénom" class="input">
+        <button id="startButton" class="button">Commencer</button>
+    </div>
+
+    <script>
+        document.getElementById('startButton').addEventListener('click', () => {
+            const name = document.getElementById('name').value.trim();
+            if (name) {
+                fetch('web-production-6586.up.railway.app', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name }),
+                }).then(r
